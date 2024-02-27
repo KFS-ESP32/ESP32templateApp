@@ -8,14 +8,14 @@ You can run the webapp locally with `npm run dev`. If you enter the IP of your E
 npm install
 ```
 
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
 ### Type-Check, Compile and Minify for Production
 
 ```sh
 npm run build
+```
+
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
 ```
