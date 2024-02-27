@@ -20,8 +20,8 @@
 #define WIFI_RECONNECT_TIMEOUT 30
 #define WIFI_RECONNECT_REDO_TIMEOUT 600
 
-#define WIFI_SSID "T-OnlineWLAN-DSL" // TODO: Muss wieder raus!
-#define WIFI_PASSWORD "***REMOVED***" // TODO: Muss wieder raus!
+#define WIFI_SSID "" 
+#define WIFI_PASSWORD ""
 #define WIFI_DHCP true
 
 #define MDNS_ENABLED false
