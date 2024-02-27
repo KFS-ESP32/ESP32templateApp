@@ -1,0 +1,13 @@
+{
+    "name": "ESPtemplateApp",
+    "short_name": "ESPtemplateApp",
+    "display": "standalone",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "/favicon.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        }
+    ]
+}
