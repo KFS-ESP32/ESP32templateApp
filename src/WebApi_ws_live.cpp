@@ -28,10 +28,9 @@ void WebApiWsLiveClass::init(AsyncWebServer& server, Scheduler& scheduler)
     using std::placeholders::_5;
     using std::placeholders::_6;
 
-    _server = &server;
-    _server->on("/api/livedata/status", HTTP_GET, std::bind(&WebApiWsLiveClass::onLivedataStatus, this, _1));
+    server.on("/api/livedata/status", HTTP_GET, std::bind(&WebApiWsLiveClass::onLivedataStatus, this, _1));
 
-    _server->addHandler(&_ws);
+    server.addHandler(&_ws);
     _ws.onEvent(std::bind(&WebApiWsLiveClass::onWebsocketEvent, this, _1, _2, _3, _4, _5, _6));
 
     scheduler.addTask(_wsCleanupTask);
@@ -139,7 +138,8 @@ void WebApiWsLiveClass::onWebsocketEvent(AsyncWebSocket* server, AsyncWebSocketC
 
 void WebApiWsLiveClass::onLivedataStatus(AsyncWebServerRequest* request)
 {
-    if (WebApi.checkCredentialsReadonly(request) == false) {
+    if (WebApi.checkCredentialsReadonly(request) == false)
+    {
         return;
     }
 

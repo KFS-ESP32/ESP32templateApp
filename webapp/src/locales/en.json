@@ -131,6 +131,7 @@
         "Used": "Used",
         "Size": "Size",
         "Heap": "Heap",
+        "PsRam": "PSRAM",
         "LittleFs": "LittleFs",
         "Sketch": "Sketch"
     },

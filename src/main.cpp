@@ -21,6 +21,9 @@ uint _lifeCounter;
 
 void setup()
 {
+    // Move all dynamic allocations >512byte to psram (if available)
+    heap_caps_malloc_extmem_enable(512);
+
     // Initialize serial output
     Serial.begin(SERIAL_BAUDRATE);
 #if ARDUINO_USB_CDC_ON_BOOT

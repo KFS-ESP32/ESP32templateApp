@@ -14,11 +14,9 @@ void WebApiMqttClass::init(AsyncWebServer& server, Scheduler& scheduler)
 {
     using std::placeholders::_1;
 
-    _server = &server;
-
-    _server->on("/api/mqtt/status", HTTP_GET, std::bind(&WebApiMqttClass::onMqttStatus, this, _1));
-    _server->on("/api/mqtt/config", HTTP_GET, std::bind(&WebApiMqttClass::onMqttAdminGet, this, _1));
-    _server->on("/api/mqtt/config", HTTP_POST, std::bind(&WebApiMqttClass::onMqttAdminPost, this, _1));
+    server.on("/api/mqtt/status", HTTP_GET, std::bind(&WebApiMqttClass::onMqttStatus, this, _1));
+    server.on("/api/mqtt/config", HTTP_GET, std::bind(&WebApiMqttClass::onMqttAdminGet, this, _1));
+    server.on("/api/mqtt/config", HTTP_POST, std::bind(&WebApiMqttClass::onMqttAdminPost, this, _1));
 }
 
 void WebApiMqttClass::onMqttStatus(AsyncWebServerRequest* request)
@@ -334,6 +332,8 @@ void WebApiMqttClass::onMqttAdminPost(AsyncWebServerRequest* request)
     request->send(response);
 
     MqttSettings.performReconnect();
+    // TODO: Finish MQTT implementation
+    // MqttHandleHass.forceUpdate();
 }
 
 String WebApiMqttClass::getTlsCertInfo(const char* cert)

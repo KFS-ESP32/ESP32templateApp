@@ -5,6 +5,7 @@
 #include "Utils.h"
 #include "MessageOutput.h"
 #include <Esp.h>
+#include <LittleFS.h>
 
 uint32_t Utils::getChipId()
 {
@@ -48,5 +49,18 @@ bool Utils::checkJsonAlloc(const DynamicJsonDocument& doc, const char* function,
     }
 
     return true;
+}
+
+/// @brief  Remove all files from filesystem on factory reset
+///         This allows to create more user defined files and get them deleted on factory reset.
+void Utils::removeAllFiles()
+{
+    auto root = LittleFS.open("/");
+    auto file = root.getNextFileName();
+
+    while (file != "") {
+        LittleFS.remove(file);
+        file = root.getNextFileName();
+    }
 }
 

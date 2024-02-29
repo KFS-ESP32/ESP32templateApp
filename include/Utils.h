@@ -10,4 +10,5 @@ public:
     static int getTimezoneOffset();
     static void restartAPP();
     static bool checkJsonAlloc(const DynamicJsonDocument& doc, const char* function, const uint16_t line);
+    static void removeAllFiles();
 };

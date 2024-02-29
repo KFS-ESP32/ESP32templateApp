@@ -1,0 +1,6 @@
+Stand: 29.02.2024
+
+
+Version v24.2.16 - OK --> 27.02.2024
+Version v24.2.12 - OK --> 29.02.2024
+Version v24.1.26 - OK, war schon vorhanden
