@@ -19,3 +19,11 @@ npm run build
 ```sh
 npm run dev
 ```
+
+## Lint with [ESLint](https://eslint.org/)
+
+```bash
+npm init @eslint/config (Install and configure ESLint using this command)
+
+npm run lint
+```

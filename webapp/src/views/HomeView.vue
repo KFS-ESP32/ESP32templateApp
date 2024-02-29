@@ -51,19 +51,7 @@ import ModalDialog from "@/components/ModalDialog.vue";
 import type { LiveData } from '@/types/LiveDataStatus';
 import { authHeader, authUrl, handleResponse, isLoggedIn } from "@/utils/authentication";
 import * as bootstrap from "bootstrap";
-import {
-  BIconArrowCounterclockwise,
-  BIconCheckCircleFill,
-  BIconCpu,
-  BIconExclamationCircleFill,
-  BIconJournalText,
-  BIconOutlet,
-  BIconPower,
-  BIconSpeedometer,
-  BIconToggleOff,
-  BIconToggleOn,
-  BIconXCircleFill,
-} from "bootstrap-icons-vue";
+import {} from "bootstrap-icons-vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -74,17 +62,6 @@ export default defineComponent({
     InputElement,
     HintView,
     ModalDialog,
-    BIconArrowCounterclockwise,
-    BIconCheckCircleFill,
-    BIconCpu,
-    BIconExclamationCircleFill,
-    BIconJournalText,
-    BIconOutlet,
-    BIconPower,
-    BIconSpeedometer,
-    BIconToggleOff,
-    BIconToggleOn,
-    BIconXCircleFill,
   },
   data() {
     return {
