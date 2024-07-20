@@ -29,7 +29,7 @@ void LedBlinkerClass::init(Scheduler &scheduler)
     _loopTask.enable();
 }
 
-inline void LedBlinkerClass::loop()
+void LedBlinkerClass::loop()
 {
     // LED-Blinker, wird alle BLINK_INTERVALL aufgerufen
     if (LED_state == true)
@@ -49,7 +49,7 @@ void LedBlinkerClass::StartupBlinkIntervall()
     SetPinMode();
 
     // LED-Blinker
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 10; i++)
     {
         digitalWrite(BUILTIN_LED_PIN, HIGH);
         delay(100);

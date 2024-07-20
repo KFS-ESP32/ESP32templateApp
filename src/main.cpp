@@ -37,16 +37,17 @@ void setup()
     // LED-Blinker
     LedBlinker.StartupBlinkIntervall();
 
+	// Message-Output
     MessageOutput.init(scheduler);
     MessageOutput.println();
     MessageOutput.println("Starting ESPtemplateApp");
 
     // Initialize file system
     MessageOutput.print("Initialize FS... ");
-    if (!LittleFS.begin(false))
-    { // Do not format if mount failed
+    if (LittleFS.begin(false) == false) // Do not format if mount failed
+    {
         MessageOutput.print("failed... trying to format...");
-        if (!LittleFS.begin(true))
+        if (LittleFS.begin(true) == true)
         {
             MessageOutput.print("success");
         }

@@ -111,8 +111,9 @@ bool ConfigurationClass::read()
 
     DynamicJsonDocument doc(JSON_BUFFER_SIZE);
 
-    if (!Utils::checkJsonAlloc(doc, __FUNCTION__, __LINE__)) {
-        return false;
+    if (Utils::checkJsonAlloc(doc, __FUNCTION__, __LINE__) == false)
+    {
+        return false; // --> set setDefaultConfig()
     }
 
     // Deserialize the JSON document
@@ -120,6 +121,7 @@ bool ConfigurationClass::read()
     if (error)
     {
         MessageOutput.println("Failed to read file, using default configuration");
+        return false; // --> set setDefaultConfig()
     }
 
     JsonObject cfg = doc["cfg"];
@@ -295,7 +297,8 @@ void ConfigurationClass::migrate()
 
     DynamicJsonDocument doc(JSON_BUFFER_SIZE);
 
-    if (!Utils::checkJsonAlloc(doc, __FUNCTION__, __LINE__)) {
+    if (Utils::checkJsonAlloc(doc, __FUNCTION__, __LINE__) == false)
+    {
         return;
     }
 

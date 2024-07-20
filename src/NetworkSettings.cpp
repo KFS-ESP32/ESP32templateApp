@@ -198,7 +198,7 @@ void NetworkSettingsClass::loop()
         }
     } else if (_networkMode != network_mode::WiFi)
     {
-        // Do stuff when switching to Ethernet mode
+        // Do stuff when switching to WiFi mode
         MessageOutput.println("Switch to WiFi mode");
         _networkMode = network_mode::WiFi;
         enableAdminMode();
