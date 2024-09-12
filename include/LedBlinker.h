@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 03/02/2024 Karlfried S.
  */
+#pragma once
 
 #define BLINK_INTERVALL 250 // [ms] --> 250ms
 

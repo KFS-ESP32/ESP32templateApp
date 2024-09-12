@@ -136,8 +136,8 @@ void NetworkSettingsClass::handleMDNS()
         MessageOutput.print("MDNS responder starting...");
 
         MDNS.addService("http", "tcp", 80);
-        MDNS.addService("esptemplateapp", "tcp", 80);
-        MDNS.addServiceTxt("esptemplateapp", "tcp", "git_hash", AUTO_GIT_HASH);
+        MDNS.addService(MDNS_SERVICE, "tcp", 80);
+        MDNS.addServiceTxt(MDNS_SERVICE_TXT, "tcp", "git_hash", AUTO_GIT_HASH);
 
         MessageOutput.println("done");
     } else {

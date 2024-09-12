@@ -24,6 +24,10 @@
 #define WIFI_PASSWORD ""
 #define WIFI_DHCP true
 
+// MDNS
+#define MDNS_SERVICE "esptemplateapp"
+#define MDNS_SERVICE_TXT "esptemplateapp"
+
 #define MDNS_ENABLED false
 
 // NTP
