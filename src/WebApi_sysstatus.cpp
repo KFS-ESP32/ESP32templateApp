@@ -6,11 +6,11 @@
 #include "Configuration.h"
 #include "NetworkSettings.h"
 #include "WebApi.h"
-//#include "__compiled_constants.h"
-//#include <CpuTemperature.h>
 #include <AsyncJson.h>
 #include <LittleFS.h>
 #include <ResetReason.h>
+#include "__compiled_constants.h"
+
 
 #ifndef AUTO_GIT_HASH
 #define AUTO_GIT_HASH ""

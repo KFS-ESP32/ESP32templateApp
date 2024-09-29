@@ -6,6 +6,7 @@
 #include "Configuration.h"
 #include "MessageOutput.h"
 #include "Utils.h"
+#include "__compiled_constants.h"
 #include "defaults.h"
 #include <ESPmDNS.h>
 #include <ETH.h>
@@ -21,18 +22,21 @@ NetworkSettingsClass::NetworkSettingsClass()
 void NetworkSettingsClass::init(Scheduler& scheduler)
 {
     using std::placeholders::_1;
+    using std::placeholders::_2;
 
     WiFi.setScanMethod(WIFI_ALL_CHANNEL_SCAN);
     WiFi.setSortMethod(WIFI_CONNECT_AP_BY_SIGNAL);
 
-    WiFi.onEvent(std::bind(&NetworkSettingsClass::NetworkEvent, this, _1));
+    WiFi.disconnect(true, true);
+
+    WiFi.onEvent(std::bind(&NetworkSettingsClass::NetworkEvent, this, _1, _2));
     setupMode();
 
     scheduler.addTask(_loopTask);
     _loopTask.enable();
 }
 
-void NetworkSettingsClass::NetworkEvent(const WiFiEvent_t event)
+void NetworkSettingsClass::NetworkEvent(const WiFiEvent_t event, WiFiEventInfo_t info)
 {
     switch (event) {
     case ARDUINO_EVENT_ETH_START:
@@ -72,10 +76,12 @@ void NetworkSettingsClass::NetworkEvent(const WiFiEvent_t event)
         }
         break;
     case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
-        MessageOutput.println("WiFi disconnected");
+        // Reason codes can be found here: https://github.com/espressif/esp-idf/blob/5454d37d496a8c58542eb450467471404c606501/components/esp_wifi/include/esp_wifi_types_generic.h#L79-L141
+        MessageOutput.printf("WiFi disconnected: %d\r\n", info.wifi_sta_disconnected.reason);
         if (_networkMode == network_mode::WiFi) {
             MessageOutput.println("Try reconnecting");
-            WiFi.reconnect();
+            WiFi.disconnect(true, false);
+            WiFi.begin();
             raiseEvent(network_event::NETWORK_DISCONNECTED);
         }
         break;
@@ -104,12 +110,9 @@ bool NetworkSettingsClass::onEvent(NetworkEventCb cbEvent, const network_event e
 
 void NetworkSettingsClass::raiseEvent(const network_event event)
 {
-    for (uint32_t i = 0; i < _cbEventList.size(); i++) {
-        const NetworkEventCbList_t entry = _cbEventList[i];
-        if (entry.cb)
-        {
-            if (entry.event == event || entry.event == network_event::NETWORK_EVENT_MAX)
-            {
+    for (auto& entry : _cbEventList) {
+        if (entry.cb) {
+            if (entry.event == event || entry.event == network_event::NETWORK_EVENT_MAX) {
                 entry.cb(event);
             }
         }
@@ -137,7 +140,7 @@ void NetworkSettingsClass::handleMDNS()
 
         MDNS.addService("http", "tcp", 80);
         MDNS.addService(MDNS_SERVICE, "tcp", 80);
-        MDNS.addServiceTxt(MDNS_SERVICE_TXT, "tcp", "git_hash", AUTO_GIT_HASH);
+        MDNS.addServiceTxt(MDNS_SERVICE_TXT, "tcp", "git_hash", __COMPILED_GIT_HASH__);
 
         MessageOutput.println("done");
     } else {
