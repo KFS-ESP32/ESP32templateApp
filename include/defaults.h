@@ -13,7 +13,7 @@
 
 #define ACCESS_POINT_NAME "ESPtemplateApp-"
 #define ACCESS_POINT_PASSWORD "esp32!"
-#define ACCESS_POINT_TIMEOUT 3;
+#define ACCESS_POINT_TIMEOUT 3
 #define AUTH_USERNAME "admin"
 #define SECURITY_ALLOW_READONLY true
 

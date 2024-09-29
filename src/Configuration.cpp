@@ -183,6 +183,7 @@ bool ConfigurationClass::read()
     config.Mqtt.Enabled = mqtt["enabled"];
     strlcpy(config.Mqtt.Hostname, mqtt["hostname"], sizeof(config.Mqtt.Hostname));
     config.Mqtt.Port = mqtt["port"] | MQTT_PORT;
+    strlcpy(config.Mqtt.ClientId, mqtt["clientid"], sizeof(config.Mqtt.ClientId));
     strlcpy(config.Mqtt.Username, mqtt["username"], sizeof(config.Mqtt.Username));
     strlcpy(config.Mqtt.Password, mqtt["password"], sizeof(config.Mqtt.Password));
     strlcpy(config.Mqtt.Topic, mqtt["topic"], sizeof(config.Mqtt.Topic));
@@ -254,6 +255,7 @@ bool ConfigurationClass::setDefaultConfig()
     config.Mqtt.Enabled = MQTT_ENABLED;
     strlcpy(config.Mqtt.Hostname, MQTT_HOST, sizeof(config.Mqtt.Hostname));
     config.Mqtt.Port = MQTT_PORT;
+    strlcpy(config.Mqtt.ClientId, NetworkSettings.getApName().c_str(), sizeof(config.Mqtt.ClientId));
     strlcpy(config.Mqtt.Username, MQTT_USER, sizeof(config.Mqtt.Username));
     strlcpy(config.Mqtt.Password, MQTT_PASSWORD, sizeof(config.Ntp.Server));
     strlcpy(config.Mqtt.Topic, MQTT_TOPIC, sizeof(config.Mqtt.Topic));
