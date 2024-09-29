@@ -7,7 +7,7 @@ import { dateTimeFormats, defaultLocale, numberFormats } from './locales'
 import { tooltip } from './plugins/bootstrap'
 import router from './router'
 
-import "bootstrap"
+import 'bootstrap'
 import './scss/styles.scss'
 
 // Create APP Instance!

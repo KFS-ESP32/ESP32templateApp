@@ -38,10 +38,7 @@
 
 <script lang="ts">
 import BasePage from '@/components/BasePage.vue';
-import {
-    BIconActivity,
-    BIconInfoCircle
-} from 'bootstrap-icons-vue';
+import { BIconActivity, BIconInfoCircle } from 'bootstrap-icons-vue';
 import { defineComponent } from 'vue';
 
 export default defineComponent({

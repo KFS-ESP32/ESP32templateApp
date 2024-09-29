@@ -13,10 +13,10 @@
 
 <script lang="ts">
 import BasePage from '@/components/BasePage.vue';
-import FirmwareInfo from "@/components/FirmwareInfo.vue";
-import HardwareInfo from "@/components/HardwareInfo.vue";
-import MemoryInfo from "@/components/MemoryInfo.vue";
-import HeapDetails from "@/components/HeapDetails.vue";
+import FirmwareInfo from '@/components/FirmwareInfo.vue';
+import HardwareInfo from '@/components/HardwareInfo.vue';
+import MemoryInfo from '@/components/MemoryInfo.vue';
+import HeapDetails from '@/components/HeapDetails.vue';
 import type { SystemStatus } from '@/types/SystemStatus';
 import { authHeader, handleResponse } from '@/utils/authentication';
 import { defineComponent } from 'vue';
@@ -42,7 +42,7 @@ export default defineComponent({
     methods: {
         getSystemInfo() {
             this.dataLoading = true;
-            fetch("/api/system/status", { headers: authHeader() })
+            fetch('/api/system/status', { headers: authHeader() })
                 .then((response) => handleResponse(response, this.$emitter, this.$router))
                 .then((data) => {
                     this.systemDataList = data;

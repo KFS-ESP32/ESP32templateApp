@@ -42,14 +42,14 @@
 
 
 <script lang="ts">
-import BasePage from "@/components/BasePage.vue";
-import BootstrapAlert from "@/components/BootstrapAlert.vue";
+import BasePage from '@/components/BasePage.vue';
+import BootstrapAlert from '@/components/BootstrapAlert.vue';
 import CardElement from '@/components/CardElement.vue';
 import InputElement from '@/components/InputElement.vue';
-import HintView from "@/components/HintView.vue";
-import ModalDialog from "@/components/ModalDialog.vue";
+import HintView from '@/components/HintView.vue';
+import ModalDialog from '@/components/ModalDialog.vue';
 import type { LiveData } from '@/types/LiveDataStatus';
-import { authHeader, authUrl, handleResponse, isLoggedIn } from "@/utils/authentication";
+import { authHeader, authUrl, handleResponse, isLoggedIn } from '@/utils/authentication';
 import * as bootstrap from "bootstrap";
 import {} from "bootstrap-icons-vue";
 import { defineComponent } from "vue";

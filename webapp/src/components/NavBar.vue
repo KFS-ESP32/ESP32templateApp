@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-expand-md fixed-top bg-body-tertiary" data-bs-theme="dark">
         <div class="container-fluid">
-            <router-link @click="onClick" class="navbar-brand" to="/" style="display: flex; height: 30px; padding: 0;">
+            <router-link @click="onClick" class="navbar-brand" to="/" style="display: flex; height: 30px; padding: 0">
                 <BIconTree v-if="isXmas" width="30" height="30" class="d-inline-block align-text-top text-success" />
 
                 <BIconEgg v-else-if="isEaster" width="30" height="30" class="d-inline-block align-text-top text-info" />
@@ -118,10 +118,10 @@ export default defineComponent({
         }
     },
     created() {
-        this.$emitter.on("logged-in", () => {
+        this.$emitter.on('logged-in', () => {
             this.isLogged = this.isLoggedIn();
         });
-        this.$emitter.on("logged-out", () => {
+        this.$emitter.on('logged-out', () => {
             this.isLogged = this.isLoggedIn();
         });
 
@@ -153,11 +153,11 @@ export default defineComponent({
         signout(e: Event) {
             e.preventDefault();
             this.logout();
-            this.$emitter.emit("logged-out");
+            this.$emitter.emit('logged-out');
             this.$router.push('/');
         },
         onClick() {
-            this.$refs.navbarCollapse && (this.$refs.navbarCollapse as HTMLElement).classList.remove("show");
+            this.$refs.navbarCollapse && (this.$refs.navbarCollapse as HTMLElement).classList.remove('show');
         },
         getEasterSunday(year: number): Date {
             const f = Math.floor;
