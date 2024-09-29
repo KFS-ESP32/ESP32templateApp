@@ -80,7 +80,7 @@ void NetworkSettingsClass::NetworkEvent(const WiFiEvent_t event, WiFiEventInfo_t
         MessageOutput.printf("WiFi disconnected: %d\r\n", info.wifi_sta_disconnected.reason);
         if (_networkMode == network_mode::WiFi) {
             MessageOutput.println("Try reconnecting");
-            WiFi.disconnect(true, true);
+            WiFi.disconnect(true, false);
             WiFi.begin();
             raiseEvent(network_event::NETWORK_DISCONNECTED);
         }
