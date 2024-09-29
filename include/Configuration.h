@@ -15,14 +15,12 @@
 #define NTP_MAX_TIMEZONEDESCR_STRLEN 50
 
 #define MQTT_MAX_HOSTNAME_STRLEN 128
+#define MQTT_MAX_CLIENTID_STRLEN 64
 #define MQTT_MAX_USERNAME_STRLEN 64
 #define MQTT_MAX_PASSWORD_STRLEN 64
 #define MQTT_MAX_TOPIC_STRLEN 32
 #define MQTT_MAX_LWTVALUE_STRLEN 20
 #define MQTT_MAX_CERT_STRLEN 2560
-
-#define JSON_BUFFER_SIZE (1024 * 10) // 10kB
-
 
 struct CONFIG_T {
     struct {
@@ -61,6 +59,7 @@ struct CONFIG_T {
         bool Enabled;
         char Hostname[MQTT_MAX_HOSTNAME_STRLEN + 1];
         uint32_t Port;
+		char ClientId[MQTT_MAX_CLIENTID_STRLEN + 1];
         char Username[MQTT_MAX_USERNAME_STRLEN + 1];
         char Password[MQTT_MAX_PASSWORD_STRLEN + 1];
         char Topic[MQTT_MAX_TOPIC_STRLEN + 1];
@@ -79,6 +78,7 @@ struct CONFIG_T {
             bool Enabled;
             bool Retain;
             char Topic[MQTT_MAX_TOPIC_STRLEN + 1];
+			bool IndividualPanels;
             bool Expire;
         } Hass;
 

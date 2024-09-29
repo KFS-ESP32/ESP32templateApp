@@ -63,11 +63,11 @@ void WebApiWsLiveClass::sendDataTaskCb()
     if (millis() - _lastWsPublish > (10 * 1000)) {
         try {
             std::lock_guard<std::mutex> lock(_mutex);
-            DynamicJsonDocument root(4096);
+            JsonDocument root;
+            JsonVariant var = root;
             if (Utils::checkJsonAlloc(root, __FUNCTION__, __LINE__)) {
-                JsonVariant var = root;
-                generateJsonResponse(var);
 
+                generateJsonResponse(var);
                 String buffer;
                 serializeJson(root, buffer);
 
@@ -145,13 +145,12 @@ void WebApiWsLiveClass::onLivedataStatus(AsyncWebServerRequest* request)
 
     try {
         std::lock_guard<std::mutex> lock(_mutex);
-        AsyncJsonResponse* response = new AsyncJsonResponse(false, 4096);
+        AsyncJsonResponse* response = new AsyncJsonResponse();
         auto& root = response->getRoot();
 
         generateJsonResponse(root);
 
-        response->setLength();
-        request->send(response);
+        WebApi.sendJsonResponse(request, response, __FUNCTION__, __LINE__);
 
     } catch (const std::bad_alloc& bad_alloc) {
         MessageOutput.printf("Call to /api/livedata/status temporarely out of resources. Reason: \"%s\".\r\n", bad_alloc.what());

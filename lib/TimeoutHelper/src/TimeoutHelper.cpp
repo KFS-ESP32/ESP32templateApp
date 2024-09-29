@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * Copyright (C) 2024 Karlfried S. and others
+ * Copyright (C) 2022 Thomas Basler and others
  */
 #include "TimeoutHelper.h"
 #include <Arduino.h>

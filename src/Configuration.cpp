@@ -4,6 +4,7 @@
  */
 #include "Configuration.h"
 #include "MessageOutput.h"
+#include "NetworkSettings.h"
 #include "Utils.h"
 #include "defaults.h"
 #include <ArduinoJson.h>
@@ -26,19 +27,14 @@ bool ConfigurationClass::write()
     }
     config.Cfg.SaveCount++;
 
-    DynamicJsonDocument doc(JSON_BUFFER_SIZE);
+    JsonDocument doc;
 
-    if (Utils::checkJsonAlloc(doc, __FUNCTION__, __LINE__) == false)
-    {
-        return false;
-    }
-
-    JsonObject cfg = doc.createNestedObject("cfg");
+    JsonObject cfg = doc["cfg"].to<JsonObject>();
     cfg["app_id"] = config.Cfg.AppID;
     cfg["version"] = config.Cfg.Version;
     cfg["save_count"] = config.Cfg.SaveCount;
 
-    JsonObject wifi = doc.createNestedObject("wifi");
+    JsonObject wifi = doc["wifi"].to<JsonObject>();
     wifi["ssid"] = config.WiFi.Ssid;
     wifi["password"] = config.WiFi.Password;
     wifi["ip"] = IPAddress(config.WiFi.Ip).toString();
@@ -50,10 +46,10 @@ bool ConfigurationClass::write()
     wifi["hostname"] = config.WiFi.Hostname;
     wifi["aptimeout"] = config.WiFi.ApTimeout;
 
-    JsonObject mdns = doc.createNestedObject("mdns");
+    JsonObject mdns = doc["mdns"].to<JsonObject>();
     mdns["enabled"] = config.Mdns.Enabled;
 
-    JsonObject ntp = doc.createNestedObject("ntp");
+    JsonObject ntp = doc["ntp"].to<JsonObject>();
     ntp["server"] = config.Ntp.Server;
     ntp["timezone"] = config.Ntp.Timezone;
     ntp["timezone_descr"] = config.Ntp.TimezoneDescr;
@@ -61,10 +57,11 @@ bool ConfigurationClass::write()
     ntp["longitude"] = config.Ntp.Longitude;
     ntp["sunsettype"] = config.Ntp.SunsetType;
 
-    JsonObject mqtt = doc.createNestedObject("mqtt");
+    JsonObject mqtt = doc["mqtt"].to<JsonObject>();
     mqtt["enabled"] = config.Mqtt.Enabled;
     mqtt["hostname"] = config.Mqtt.Hostname;
     mqtt["port"] = config.Mqtt.Port;
+    mqtt["clientid"] = config.Mqtt.ClientId;
     mqtt["username"] = config.Mqtt.Username;
     mqtt["password"] = config.Mqtt.Password;
     mqtt["topic"] = config.Mqtt.Topic;
@@ -72,26 +69,26 @@ bool ConfigurationClass::write()
     mqtt["publish_interval"] = config.Mqtt.PublishInterval;
     mqtt["clean_session"] = config.Mqtt.CleanSession;
 
-    JsonObject mqtt_lwt = mqtt.createNestedObject("lwt");
+    JsonObject mqtt_lwt = mqtt["lwt"].to<JsonObject>();
     mqtt_lwt["topic"] = config.Mqtt.Lwt.Topic;
     mqtt_lwt["value_online"] = config.Mqtt.Lwt.Value_Online;
     mqtt_lwt["value_offline"] = config.Mqtt.Lwt.Value_Offline;
     mqtt_lwt["qos"] = config.Mqtt.Lwt.Qos;
 
-    JsonObject mqtt_tls = mqtt.createNestedObject("tls");
+    JsonObject mqtt_tls = mqtt["tls"].to<JsonObject>();
     mqtt_tls["enabled"] = config.Mqtt.Tls.Enabled;
     mqtt_tls["root_ca_cert"] = config.Mqtt.Tls.RootCaCert;
     mqtt_tls["certlogin"] = config.Mqtt.Tls.CertLogin;
     mqtt_tls["client_cert"] = config.Mqtt.Tls.ClientCert;
     mqtt_tls["client_key"] = config.Mqtt.Tls.ClientKey;
 
-    JsonObject mqtt_hass = mqtt.createNestedObject("hass");
+    JsonObject mqtt_hass = mqtt["hass"].to<JsonObject>();
     mqtt_hass["enabled"] = config.Mqtt.Hass.Enabled;
     mqtt_hass["retain"] = config.Mqtt.Hass.Retain;
     mqtt_hass["topic"] = config.Mqtt.Hass.Topic;
     mqtt_hass["expire"] = config.Mqtt.Hass.Expire;
 
-    JsonObject security = doc.createNestedObject("security");
+    JsonObject security = doc["security"].to<JsonObject>();
     security["password"] = config.Security.Password;
     security["allow_readonly"] = config.Security.AllowReadonly;
 
@@ -109,12 +106,7 @@ bool ConfigurationClass::read()
 {
     File f = LittleFS.open(CONFIG_FILENAME, "r", false);
 
-    DynamicJsonDocument doc(JSON_BUFFER_SIZE);
-
-    if (Utils::checkJsonAlloc(doc, __FUNCTION__, __LINE__) == false)
-    {
-        return false; // --> set setDefaultConfig()
-    }
+    JsonDocument doc;
 
     // Deserialize the JSON document
     const DeserializationError error = deserializeJson(doc, f);
@@ -122,6 +114,10 @@ bool ConfigurationClass::read()
     {
         MessageOutput.println("Failed to read file, using default configuration");
         return false; // --> set setDefaultConfig()
+    }
+
+   if (!Utils::checkJsonAlloc(doc, __FUNCTION__, __LINE__)) {
+        return false;
     }
 
     JsonObject cfg = doc["cfg"];
@@ -295,18 +291,17 @@ void ConfigurationClass::migrate()
         return;
     }
 
-    DynamicJsonDocument doc(JSON_BUFFER_SIZE);
-
-    if (Utils::checkJsonAlloc(doc, __FUNCTION__, __LINE__) == false)
-    {
-        return;
-    }
+    JsonDocument doc;
 
     // Deserialize the JSON document
     const DeserializationError error = deserializeJson(doc, f);
-    if (error)
-    {
+    if (error) {
         MessageOutput.printf("Failed to read file, cancel migration: %s\r\n", error.c_str());
+        return;
+    }
+
+    if (Utils::checkJsonAlloc(doc, __FUNCTION__, __LINE__) == false)
+    {
         return;
     }
 

@@ -1,6 +1,7 @@
 import AboutView from '@/views/AboutView.vue';
 import ConfigAdminView from '@/views/ConfigAdminView.vue';
 import ConsoleInfoView from '@/views/ConsoleInfoView.vue';
+import ErrorView from '@/views/ErrorView.vue';
 import FirmwareUpgradeView from '@/views/FirmwareUpgradeView.vue';
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
@@ -22,77 +23,82 @@ const router = createRouter({
     {
         path: '/',
         name: 'Home',
-        component: HomeView
+        component: HomeView,
     },
     {
         path: '/login',
         name: 'Login',
-        component: LoginView
+        component: LoginView,
+    },
+    {
+        path: '/error?status=:status&message=:message',
+        name: 'Error',
+        component: ErrorView,
     },
     {
         path: '/about',
         name: 'About',
-        component: AboutView
+        component: AboutView,
     },
     {
         path: '/info/network',
         name: 'Network',
-        component: NetworkInfoView
+        component: NetworkInfoView,
     },
     {
         path: '/info/system',
         name: 'System',
-        component: SystemInfoView
+        component: SystemInfoView,
     },
     {
         path: '/info/ntp',
         name: 'NTP',
-        component: NtpInfoView
+        component: NtpInfoView,
     },
     {
         path: '/info/mqtt',
         name: 'MqTT',
-        component: MqttInfoView
+        component: MqttInfoView,
     },
     {
         path: '/info/console',
         name: 'Web Console',
-        component: ConsoleInfoView
+        component: ConsoleInfoView,
     },
     {
         path: '/settings/network',
         name: 'Network Settings',
-        component: NetworkAdminView
+        component: NetworkAdminView,
     },
     {
         path: '/settings/ntp',
         name: 'NTP Settings',
-        component: NtpAdminView
+        component: NtpAdminView,
     },
     {
         path: '/settings/mqtt',
         name: 'MqTT Settings',
-        component: MqttAdminView
+        component: MqttAdminView,
     },
     {
         path: '/firmware/upgrade',
         name: 'Firmware Upgrade',
-        component: FirmwareUpgradeView
+        component: FirmwareUpgradeView,
     },
     {
         path: '/settings/config',
         name: 'Config Management',
-        component: ConfigAdminView
+        component: ConfigAdminView,
     },
     {
         path: '/settings/security',
         name: 'Security',
-        component: SecurityAdminView
+        component: SecurityAdminView,
     },
     {
         path: '/maintenance/reboot',
         name: 'Device Reboot',
-        component: MaintenanceRebootView
+        component: MaintenanceRebootView,
     }
 ]
 });

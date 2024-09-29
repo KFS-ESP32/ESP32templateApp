@@ -6,6 +6,8 @@
 #include "Configuration.h"
 #include "NetworkSettings.h"
 #include "WebApi.h"
+//#include "__compiled_constants.h"
+//#include <CpuTemperature.h>
 #include <AsyncJson.h>
 #include <LittleFS.h>
 #include <ResetReason.h>
@@ -67,6 +69,6 @@ void WebApiSysstatusClass::onSystemStatus(AsyncWebServerRequest* request)
 
     root["uptime"] = esp_timer_get_time() / 1000000;
 
-    response->setLength();
-    request->send(response);
+
+    WebApi.sendJsonResponse(request, response, __FUNCTION__, __LINE__);
 }
