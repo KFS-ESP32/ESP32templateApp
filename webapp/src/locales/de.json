@@ -95,7 +95,7 @@
         "Unknown": "Unbekannt"
     },
     "eventlog": {
-        "Start": "Begin",
+        "Start": "Beginn",
         "Stop": "Ende",
         "Id": "ID",
         "Message": "Meldung"
@@ -124,7 +124,10 @@
         "ChipRevision": "Chip-Revision",
         "ChipCores": "Chip-Kerne",
         "CpuFrequency": "CPU-Frequenz",
-        "Mhz": "MHz"
+        "Mhz": "MHz",
+        "CpuTemperature": "CPU Temperatur",
+        "DegreeC": "°C",
+        "FlashSize": "Flash-Speichergröße"
     },
     "memoryinfo": {
         "MemoryInformation": "Speicherinformationen",

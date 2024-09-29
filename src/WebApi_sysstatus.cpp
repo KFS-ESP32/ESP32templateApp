@@ -6,10 +6,11 @@
 #include "Configuration.h"
 #include "NetworkSettings.h"
 #include "WebApi.h"
+#include "__compiled_constants.h"
 #include <AsyncJson.h>
+#include <CpuTemperature.h>
 #include <LittleFS.h>
 #include <ResetReason.h>
-#include "__compiled_constants.h"
 
 
 #ifndef AUTO_GIT_HASH
@@ -36,6 +37,7 @@ void WebApiSysstatusClass::onSystemStatus(AsyncWebServerRequest* request)
 
     root["sdkversion"] = ESP.getSdkVersion();
     root["cpufreq"] = ESP.getCpuFreqMHz();
+    root["cputemp"] = CpuTemperature.read();
 
     root["heap_total"] = ESP.getHeapSize();
     root["heap_used"] = ESP.getHeapSize() - ESP.getFreeHeap();
@@ -51,6 +53,7 @@ void WebApiSysstatusClass::onSystemStatus(AsyncWebServerRequest* request)
     root["chiprevision"] = ESP.getChipRevision();
     root["chipmodel"] = ESP.getChipModel();
     root["chipcores"] = ESP.getChipCores();
+    root["flashsize"] = ESP.getFlashChipSize();
 
     String reason;
     reason = ResetReason::get_reset_reason_verbose(0);

@@ -124,7 +124,10 @@
         "ChipRevision": "Chip Revision",
         "ChipCores": "Chip Cores",
         "CpuFrequency": "CPU Frequency",
-        "Mhz": "MHz"
+        "Mhz": "MHz",
+        "CpuTemperature": "CPU Temperature",
+        "DegreeC": "°C",
+        "FlashSize": "Flash Memory Size"
     },
     "memoryinfo": {
         "MemoryInformation": "Memory Information",
