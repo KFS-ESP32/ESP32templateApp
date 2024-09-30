@@ -6,6 +6,7 @@
 #include "MqttSettings.h"
 #include "NetworkSettings.h"
 #include "NtpSettings.h"
+#include "RestartHelper.h"
 #include "Scheduler.h"
 #include "SunPosition.h"
 #include "Utils.h"
@@ -96,7 +97,7 @@ void setup()
     NtpSettings.init();
     MessageOutput.println("done");
 
-      // Initialize SunPosition
+    // Initialize SunPosition
     MessageOutput.print("Initialize SunPosition... ");
     SunPosition.init(scheduler);
     MessageOutput.println("done");
@@ -109,6 +110,11 @@ void setup()
     // Initialize WebApi
     MessageOutput.print("Initialize WebApi... ");
     WebApi.init(scheduler);
+    MessageOutput.println("done");
+
+    // Initialize Restart-Helper
+    MessageOutput.print("Initialize Restart-Helper... ");
+    RestartHelper.init(scheduler);
     MessageOutput.println("done");
 
     // LED Blinker

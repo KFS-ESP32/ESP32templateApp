@@ -33,14 +33,6 @@ int Utils::getTimezoneOffset()
     return static_cast<int>(difftime(rawtime, gmt));
 }
 
-void Utils::restartAPP()
-{
-    yield();
-    delay(1000);
-    yield();
-    ESP.restart();
-}
-
 bool Utils::checkJsonAlloc(const JsonDocument& doc, const char* function, const uint16_t line)
 {
     if (doc.overflowed()) {

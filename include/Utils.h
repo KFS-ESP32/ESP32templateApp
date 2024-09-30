@@ -8,7 +8,6 @@ class Utils {
 public:
     static uint32_t getChipId();
     static int getTimezoneOffset();
-    static void restartAPP();
     static bool checkJsonAlloc(const JsonDocument& doc, const char* function, const uint16_t line);
     static void removeAllFiles();
 };
