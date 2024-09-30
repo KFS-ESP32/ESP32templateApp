@@ -44,6 +44,7 @@ export default defineConfig({
     outDir: '../webapp_dist',
     emptyOutDir: true,
     minify: 'terser',
+    chunkSizeWarningLimit: 1024,
     rollupOptions: {
       output: {
         // Only create one js file
