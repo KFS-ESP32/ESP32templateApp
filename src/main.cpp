@@ -63,10 +63,13 @@ void setup()
     }
 
     // Read configuration values
+    // =========================
     MessageOutput.print("Reading configuration... ");
-    auto &config = Configuration.get();
-    bool isRead = Configuration.read();
-    if (isRead == false || config.Cfg.AppID != CONFIG_APP_ID || config.Cfg.AppID == 0)
+    Configuration.setDefaultConfig();   // 1) First we set the default config values
+    bool isRead = Configuration.read(); // 2) We try to read the config values from LittleFS
+
+    // Did something go wrong?
+    if (isRead == false || Configuration.get().Cfg.AppID != CONFIG_APP_ID || Configuration.get().Cfg.AppID == 0)
     {
         MessageOutput.print("initializing... ");
         Configuration.setDefaultConfig(); // clear all & set default values!

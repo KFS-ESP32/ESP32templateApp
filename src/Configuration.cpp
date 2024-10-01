@@ -22,9 +22,12 @@ void ConfigurationClass::init()
 bool ConfigurationClass::write()
 {
     File f = LittleFS.open(CONFIG_FILENAME, "w", true); // create file!
-    if (!f) {
+    if (!f)
+    {
+        MessageOutput.println("Failed to open file, cancel write()");
         return false;
     }
+
     config.Cfg.SaveCount++;
 
     JsonDocument doc;
@@ -105,6 +108,11 @@ bool ConfigurationClass::write()
 bool ConfigurationClass::read()
 {
     File f = LittleFS.open(CONFIG_FILENAME, "r", false);
+    if (!f)
+    {
+        MessageOutput.println("Failed to open file, cancel read()");
+        return false;
+    }
 
     JsonDocument doc;
 
@@ -116,7 +124,7 @@ bool ConfigurationClass::read()
         return false; // --> set setDefaultConfig()
     }
 
-   if (!Utils::checkJsonAlloc(doc, __FUNCTION__, __LINE__)) {
+    if (!Utils::checkJsonAlloc(doc, __FUNCTION__, __LINE__)) {
         return false;
     }
 
@@ -182,7 +190,7 @@ bool ConfigurationClass::read()
     JsonObject mqtt = doc["mqtt"];
     config.Mqtt.Enabled = mqtt["enabled"];
     strlcpy(config.Mqtt.Hostname, mqtt["hostname"], sizeof(config.Mqtt.Hostname));
-    config.Mqtt.Port = mqtt["port"] | MQTT_PORT;
+    config.Mqtt.Port = mqtt["port"];
     strlcpy(config.Mqtt.ClientId, mqtt["clientid"], sizeof(config.Mqtt.ClientId));
     strlcpy(config.Mqtt.Username, mqtt["username"], sizeof(config.Mqtt.Username));
     strlcpy(config.Mqtt.Password, mqtt["password"], sizeof(config.Mqtt.Password));
@@ -288,8 +296,9 @@ bool ConfigurationClass::setDefaultConfig()
 void ConfigurationClass::migrate()
 {
     File f = LittleFS.open(CONFIG_FILENAME, "r", false);
-    if (!f) {
-        MessageOutput.println("Failed to open file, cancel migration");
+    if (!f)
+    {
+        MessageOutput.println("Failed to open file, cancel migration()");
         return;
     }
 
@@ -318,7 +327,7 @@ void ConfigurationClass::migrate()
 
     f.close();
 
-    config.Cfg.Version = CONFIG_VERSION;
+    setDefaultConfig();
     write();
     read();
 }
