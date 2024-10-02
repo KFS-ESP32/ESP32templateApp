@@ -10,6 +10,7 @@ class WebApiWsLiveClass {
 public:
     WebApiWsLiveClass();
     void init(AsyncWebServer& server, Scheduler& scheduler);
+    void reload();
 
 private:
     void generateJsonResponse(JsonVariant& root);
@@ -17,6 +18,7 @@ private:
     void onWebsocketEvent(AsyncWebSocket* server, AsyncWebSocketClient* client, AwsEventType type, void* arg, uint8_t* data, size_t len);
 
     AsyncWebSocket _ws;
+    AuthenticationMiddleware _simpleDigestAuth;
 
     uint32_t _lastWsPublish = 0;
 

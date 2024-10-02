@@ -69,8 +69,8 @@ void WebApiSecurityClass::onSecurityPost(AsyncWebServerRequest* request)
     config.Security.AllowReadonly = root["allow_readonly"].as<bool>();
 
     WebApi.writeConfig(retMsg);
-
     WebApi.sendJsonResponse(request, response, __FUNCTION__, __LINE__);
+    WebApi.reload();
 }
 
 void WebApiSecurityClass::onAuthenticateGet(AsyncWebServerRequest* request)

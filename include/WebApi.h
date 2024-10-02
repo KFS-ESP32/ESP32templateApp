@@ -21,6 +21,7 @@ class WebApiClass {
 public:
     WebApiClass();
     void init(Scheduler& scheduler);
+    void reload();
 
     static bool checkCredentials(AsyncWebServerRequest* request);
     static bool checkCredentialsReadonly(AsyncWebServerRequest* request);
