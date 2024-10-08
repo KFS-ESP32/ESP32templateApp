@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 22/02/2024 Karlfried S.
+ * Copyright (C) 08/10/2024 Karlfried S.
  */
 #include "Configuration.h"
 #include "MessageOutput.h"
@@ -11,6 +11,7 @@
 #include "SunPosition.h"
 #include "Utils.h"
 #include "WebApi.h"
+#include "ModuleTemplate.h"
 #include "LedBlinker.h"
 #include "defaults.h"
 #include <Arduino.h>
@@ -119,6 +120,13 @@ void setup()
     MessageOutput.print("Initialize Restart-Helper... ");
     RestartHelper.init(scheduler);
     MessageOutput.println("done");
+
+    // Initialize ModuleTemplate--> Rename it to your new function!
+    MessageOutput.print("Initialize your new function???????????????... ");
+    ModuleTemplate.init(scheduler);
+    MessageOutput.println("done");
+
+
 
     // LED Blinker
     LedBlinker.init(scheduler);
