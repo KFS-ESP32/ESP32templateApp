@@ -104,7 +104,6 @@ public:
     bool read();
     bool write();
     void migrate();
-    bool setDefaultConfig();
     CONFIG_T& get();
 };
 

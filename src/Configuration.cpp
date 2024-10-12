@@ -15,16 +15,15 @@ CONFIG_T config;
 
 void ConfigurationClass::init()
 {
-    // löschen
+    // delete the hole config!
     memset(&config, 0x0, sizeof(config));
 }
 
 bool ConfigurationClass::write()
 {
-    File f = LittleFS.open(CONFIG_FILENAME, "w", true); // create file!
-    if (!f)
-    {
-        MessageOutput.println("Failed to open file, cancel write()");
+    File f = LittleFS.open(CONFIG_FILENAME, "w");
+    if (!f) {
+        MessageOutput.println("Failed to open file, cancel write()'config' file");
         return false;
     }
 
@@ -95,6 +94,10 @@ bool ConfigurationClass::write()
     security["password"] = config.Security.Password;
     security["allow_readonly"] = config.Security.AllowReadonly;
 
+    if (!Utils::checkJsonAlloc(doc, __FUNCTION__, __LINE__)) {
+        return false;
+    }
+
     // Serialize JSON to file
     if (serializeJson(doc, f) == 0) {
         MessageOutput.println("Failed to write 'config' file");
@@ -108,20 +111,13 @@ bool ConfigurationClass::write()
 bool ConfigurationClass::read()
 {
     File f = LittleFS.open(CONFIG_FILENAME, "r", false);
-    if (!f)
-    {
-        MessageOutput.println("Failed to open file, cancel read()");
-        return false;
-    }
 
     JsonDocument doc;
 
     // Deserialize the JSON document
     const DeserializationError error = deserializeJson(doc, f);
-    if (error)
-    {
+    if (error) {
         MessageOutput.println("Failed to read file, using default configuration");
-        return false; // --> set setDefaultConfig()
     }
 
     if (!Utils::checkJsonAlloc(doc, __FUNCTION__, __LINE__)) {
@@ -129,14 +125,14 @@ bool ConfigurationClass::read()
     }
 
     JsonObject cfg = doc["cfg"];
-    config.Cfg.AppID = cfg["app_id"];
-    config.Cfg.Version = cfg["version"];
-    config.Cfg.SaveCount = cfg["save_count"];
+    config.Cfg.AppID = cfg["app_id"] | CONFIG_APP_ID;
+    config.Cfg.Version = cfg["version"] | CONFIG_VERSION;
+    config.Cfg.SaveCount = cfg["save_count"] | 0;
 
     JsonObject wifi = doc["wifi"];
-    strlcpy(config.WiFi.Ssid, wifi["ssid"], sizeof(config.WiFi.Ssid));
-    strlcpy(config.WiFi.Password, wifi["password"], sizeof(config.WiFi.Password));
-    strlcpy(config.WiFi.Hostname, wifi["hostname"], sizeof(config.WiFi.Hostname));
+    strlcpy(config.WiFi.Ssid, wifi["ssid"] | WIFI_SSID, sizeof(config.WiFi.Ssid));
+    strlcpy(config.WiFi.Password, wifi["password"] | WIFI_PASSWORD, sizeof(config.WiFi.Password));
+    strlcpy(config.WiFi.Hostname, wifi["hostname"] | APP_HOSTNAME, sizeof(config.WiFi.Hostname));
 
     IPAddress wifi_ip;
     wifi_ip.fromString(wifi["ip"] | "");
@@ -173,132 +169,66 @@ bool ConfigurationClass::read()
     config.WiFi.Dns2[2] = wifi_dns2[2];
     config.WiFi.Dns2[3] = wifi_dns2[3];
 
-    config.WiFi.Dhcp = wifi["dhcp"];
-    config.WiFi.ApTimeout = wifi["aptimeout"];
+    config.WiFi.Dhcp = wifi["dhcp"] | WIFI_DHCP;
+    config.WiFi.ApTimeout = wifi["aptimeout"] | ACCESS_POINT_TIMEOUT;
 
     JsonObject mdns = doc["mdns"];
-    config.Mdns.Enabled = mdns["enabled"];
+    config.Mdns.Enabled = mdns["enabled"] | MDNS_ENABLED;
 
     JsonObject ntp = doc["ntp"];
-    strlcpy(config.Ntp.Server, ntp["server"], sizeof(config.Ntp.Server));
-    strlcpy(config.Ntp.Timezone, ntp["timezone"], sizeof(config.Ntp.Timezone));
-    strlcpy(config.Ntp.TimezoneDescr, ntp["timezone_descr"], sizeof(config.Ntp.TimezoneDescr));
-    config.Ntp.Latitude = ntp["latitude"];
-    config.Ntp.Longitude = ntp["longitude"];
-    config.Ntp.SunsetType = ntp["sunsettype"];
+    strlcpy(config.Ntp.Server, ntp["server"] | NTP_SERVER, sizeof(config.Ntp.Server));
+    strlcpy(config.Ntp.Timezone, ntp["timezone"] | NTP_TIMEZONE, sizeof(config.Ntp.Timezone));
+    strlcpy(config.Ntp.TimezoneDescr, ntp["timezone_descr"] | NTP_TIMEZONEDESCR, sizeof(config.Ntp.TimezoneDescr));
+    config.Ntp.Latitude = ntp["latitude"] | NTP_LATITUDE;
+    config.Ntp.Longitude = ntp["longitude"] | NTP_LONGITUDE;
+    config.Ntp.SunsetType = ntp["sunsettype"] | NTP_SUNSETTYPE;
 
     JsonObject mqtt = doc["mqtt"];
-    config.Mqtt.Enabled = mqtt["enabled"];
-    strlcpy(config.Mqtt.Hostname, mqtt["hostname"], sizeof(config.Mqtt.Hostname));
-    config.Mqtt.Port = mqtt["port"];
-    strlcpy(config.Mqtt.ClientId, mqtt["clientid"], sizeof(config.Mqtt.ClientId));
-    strlcpy(config.Mqtt.Username, mqtt["username"], sizeof(config.Mqtt.Username));
-    strlcpy(config.Mqtt.Password, mqtt["password"], sizeof(config.Mqtt.Password));
-    strlcpy(config.Mqtt.Topic, mqtt["topic"], sizeof(config.Mqtt.Topic));
-    config.Mqtt.Retain = mqtt["retain"];
-    config.Mqtt.PublishInterval = mqtt["publish_interval"];
-    config.Mqtt.CleanSession = mqtt["clean_session"];
+    config.Mqtt.Enabled = mqtt["enabled"] | MQTT_ENABLED;
+    strlcpy(config.Mqtt.Hostname, mqtt["hostname"] | MQTT_HOST, sizeof(config.Mqtt.Hostname));
+    config.Mqtt.Port = mqtt["port"] | MQTT_PORT;
+    strlcpy(config.Mqtt.ClientId, mqtt["clientid"] | NetworkSettings.getApName().c_str(), sizeof(config.Mqtt.ClientId));
+    strlcpy(config.Mqtt.Username, mqtt["username"] | MQTT_USER, sizeof(config.Mqtt.Username));
+    strlcpy(config.Mqtt.Password, mqtt["password"] | MQTT_PASSWORD, sizeof(config.Mqtt.Password));
+    strlcpy(config.Mqtt.Topic, mqtt["topic"] | MQTT_TOPIC, sizeof(config.Mqtt.Topic));
+    config.Mqtt.Retain = mqtt["retain"] | MQTT_RETAIN;
+    config.Mqtt.PublishInterval = mqtt["publish_interval"] | MQTT_PUBLISH_INTERVAL;
+    config.Mqtt.CleanSession = mqtt["clean_session"] | MQTT_CLEAN_SESSION;
 
     JsonObject mqtt_lwt = mqtt["lwt"];
-    strlcpy(config.Mqtt.Lwt.Topic, mqtt_lwt["topic"], sizeof(config.Mqtt.Lwt.Topic));
-    strlcpy(config.Mqtt.Lwt.Value_Online, mqtt_lwt["value_online"], sizeof(config.Mqtt.Lwt.Value_Online));
-    strlcpy(config.Mqtt.Lwt.Value_Offline, mqtt_lwt["value_offline"], sizeof(config.Mqtt.Lwt.Value_Offline));
-    config.Mqtt.Lwt.Qos = mqtt_lwt["qos"];
+    strlcpy(config.Mqtt.Lwt.Topic, mqtt_lwt["topic"] | MQTT_LWT_TOPIC, sizeof(config.Mqtt.Lwt.Topic));
+    strlcpy(config.Mqtt.Lwt.Value_Online, mqtt_lwt["value_online"] | MQTT_LWT_ONLINE, sizeof(config.Mqtt.Lwt.Value_Online));
+    strlcpy(config.Mqtt.Lwt.Value_Offline, mqtt_lwt["value_offline"] | MQTT_LWT_OFFLINE, sizeof(config.Mqtt.Lwt.Value_Offline));
+    config.Mqtt.Lwt.Qos = mqtt_lwt["qos"] | MQTT_LWT_QOS;
 
     JsonObject mqtt_tls = mqtt["tls"];
-    config.Mqtt.Tls.Enabled = mqtt_tls["enabled"];
-    strlcpy(config.Mqtt.Tls.RootCaCert, mqtt_tls["root_ca_cert"], sizeof(config.Mqtt.Tls.RootCaCert));
-    config.Mqtt.Tls.CertLogin = mqtt_tls["certlogin"];
-    strlcpy(config.Mqtt.Tls.ClientCert, mqtt_tls["client_cert"], sizeof(config.Mqtt.Tls.ClientCert));
-    strlcpy(config.Mqtt.Tls.ClientKey, mqtt_tls["client_key"], sizeof(config.Mqtt.Tls.ClientKey));
+    config.Mqtt.Tls.Enabled = mqtt_tls["enabled"] | MQTT_TLS;
+    strlcpy(config.Mqtt.Tls.RootCaCert, mqtt_tls["root_ca_cert"] | MQTT_ROOT_CA_CERT, sizeof(config.Mqtt.Tls.RootCaCert));
+    config.Mqtt.Tls.CertLogin = mqtt_tls["certlogin"] | MQTT_TLSCERTLOGIN;
+    strlcpy(config.Mqtt.Tls.ClientCert, mqtt_tls["client_cert"] | MQTT_TLSCLIENTCERT, sizeof(config.Mqtt.Tls.ClientCert));
+    strlcpy(config.Mqtt.Tls.ClientKey, mqtt_tls["client_key"] | MQTT_TLSCLIENTKEY, sizeof(config.Mqtt.Tls.ClientKey));
 
     JsonObject mqtt_hass = mqtt["hass"];
-    config.Mqtt.Hass.Enabled = mqtt_hass["enabled"];
-    config.Mqtt.Hass.Retain = mqtt_hass["retain"];
-    config.Mqtt.Hass.Expire = mqtt_hass["expire"];
-    strlcpy(config.Mqtt.Hass.Topic, mqtt_hass["topic"], sizeof(config.Mqtt.Hass.Topic));
+    config.Mqtt.Hass.Enabled = mqtt_hass["enabled"] | MQTT_HASS_ENABLED;
+    config.Mqtt.Hass.Retain = mqtt_hass["retain"] | MQTT_HASS_RETAIN;
+    config.Mqtt.Hass.Expire = mqtt_hass["expire"] | MQTT_HASS_EXPIRE;
+    strlcpy(config.Mqtt.Hass.Topic, mqtt_hass["topic"] | MQTT_HASS_TOPIC, sizeof(config.Mqtt.Hass.Topic));
 
     JsonObject security = doc["security"];
-    strlcpy(config.Security.Password, security["password"], sizeof(config.Security.Password));
-    config.Security.AllowReadonly = security["allow_readonly"];
+    strlcpy(config.Security.Password, security["password"] | ACCESS_POINT_PASSWORD, sizeof(config.Security.Password));
+    config.Security.AllowReadonly = security["allow_readonly"] | SECURITY_ALLOW_READONLY;
+
 
     f.close();
     return true;
 }
 
-bool ConfigurationClass::setDefaultConfig()
-{
-    init(); // Clear all
-
-    config.Cfg.AppID = CONFIG_APP_ID;
-    config.Cfg.Version = CONFIG_VERSION;
-    config.Cfg.SaveCount = 0;
-
-    strlcpy(config.WiFi.Ssid, WIFI_SSID, sizeof(config.WiFi.Ssid));
-    strlcpy(config.WiFi.Password, WIFI_PASSWORD, sizeof(config.WiFi.Password));
-    strlcpy(config.WiFi.Hostname, APP_HOSTNAME, sizeof(config.WiFi.Hostname));
-
-    // config.WiFi.Ip --> no init needed, all values = 0;
-
-    // config.WiFi.Netmask --> no init needed, all values = 0;
-
-    // config.WiFi.Gateway --> no init needed, all values = 0;
-
-    // config.WiFi.Dns1 --> no init needed, all values = 0;
-
-    // config.WiFi.Dns2 --> no init needed, all values = 0;
-
-    config.WiFi.Dhcp = WIFI_DHCP;
-    config.WiFi.ApTimeout = ACCESS_POINT_TIMEOUT;
-
-    config.Mdns.Enabled = MDNS_ENABLED;
-
-    strlcpy(config.Ntp.Server, NTP_SERVER, sizeof(config.Ntp.Server));
-    strlcpy(config.Ntp.Timezone, NTP_TIMEZONE, sizeof(config.Ntp.Timezone));
-    strlcpy(config.Ntp.TimezoneDescr, NTP_TIMEZONEDESCR, sizeof(config.Ntp.TimezoneDescr));
-    config.Ntp.Latitude = NTP_LATITUDE;
-    config.Ntp.Longitude = NTP_LONGITUDE;
-    config.Ntp.SunsetType = NTP_SUNSETTYPE;
-
-    config.Mqtt.Enabled = MQTT_ENABLED;
-    strlcpy(config.Mqtt.Hostname, MQTT_HOST, sizeof(config.Mqtt.Hostname));
-    config.Mqtt.Port = MQTT_PORT;
-    strlcpy(config.Mqtt.ClientId, NetworkSettings.getApName().c_str(), sizeof(config.Mqtt.ClientId));
-    strlcpy(config.Mqtt.Username, MQTT_USER, sizeof(config.Mqtt.Username));
-    strlcpy(config.Mqtt.Password, MQTT_PASSWORD, sizeof(config.Ntp.Server));
-    strlcpy(config.Mqtt.Topic, MQTT_TOPIC, sizeof(config.Mqtt.Topic));
-    config.Mqtt.Retain = MQTT_RETAIN;
-    config.Mqtt.PublishInterval = MQTT_PUBLISH_INTERVAL;
-    config.Mqtt.CleanSession = MQTT_CLEAN_SESSION;
-
-    strlcpy(config.Mqtt.Lwt.Topic, MQTT_LWT_TOPIC, sizeof(config.Mqtt.Topic));
-    strlcpy(config.Mqtt.Lwt.Value_Online, MQTT_LWT_ONLINE, sizeof(config.Mqtt.Lwt.Value_Online));
-    strlcpy(config.Mqtt.Lwt.Value_Offline, MQTT_LWT_OFFLINE, sizeof(config.Mqtt.Lwt.Value_Offline));
-    config.Mqtt.Lwt.Qos = MQTT_LWT_QOS;
-
-    config.Mqtt.Tls.Enabled = MQTT_TLS;
-    strlcpy(config.Mqtt.Tls.RootCaCert, MQTT_ROOT_CA_CERT, sizeof(config.Mqtt.Tls.RootCaCert));
-    config.Mqtt.Tls.CertLogin = MQTT_TLSCERTLOGIN;
-    strlcpy(config.Mqtt.Tls.ClientCert, MQTT_TLSCLIENTCERT, sizeof(config.Mqtt.Tls.ClientCert));
-    strlcpy(config.Mqtt.Tls.ClientKey, MQTT_TLSCLIENTKEY, sizeof(config.Mqtt.Tls.ClientKey));
-
-    config.Mqtt.Hass.Enabled = MQTT_HASS_ENABLED;
-    config.Mqtt.Hass.Retain = MQTT_HASS_RETAIN;
-    config.Mqtt.Hass.Expire = MQTT_HASS_EXPIRE;
-    strlcpy(config.Mqtt.Hass.Topic, MQTT_HASS_TOPIC, sizeof(config.Mqtt.Hass.Topic));
-
-    strlcpy(config.Security.Password, ACCESS_POINT_PASSWORD, sizeof(config.Security.Password));
-    config.Security.AllowReadonly = SECURITY_ALLOW_READONLY;
-
-    return true;
-}
 
 void ConfigurationClass::migrate()
 {
     File f = LittleFS.open(CONFIG_FILENAME, "r", false);
-    if (!f)
-    {
-        MessageOutput.println("Failed to open file, cancel migration()");
+    if (!f) {
+        MessageOutput.println("Failed to open file, cancel migration");
         return;
     }
 
@@ -311,10 +241,16 @@ void ConfigurationClass::migrate()
         return;
     }
 
-    if (Utils::checkJsonAlloc(doc, __FUNCTION__, __LINE__) == false)
-    {
+    if (!Utils::checkJsonAlloc(doc, __FUNCTION__, __LINE__)) {
         return;
     }
+
+/*  TODO: Do some Migrations!
+    if (config.Cfg.Version < 0x00011800) {
+        JsonObject mqtt = doc["mqtt"];
+        config.Mqtt.PublishInterval = mqtt["publish_invterval"];
+    }
+*/
 
     // TODO: Version abändern!
     if (config.Cfg.Version < 0x00000001) {
@@ -327,7 +263,7 @@ void ConfigurationClass::migrate()
 
     f.close();
 
-    setDefaultConfig();
+    config.Cfg.Version = CONFIG_VERSION;
     write();
     read();
 }

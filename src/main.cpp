@@ -46,47 +46,40 @@ void setup()
 
     // Initialize file system
     MessageOutput.print("Initialize FS... ");
-    if (LittleFS.begin(false) == false) // Do not format if mount failed
-    {
+    if (!LittleFS.begin(false)) { // Do not format if mount failed
         MessageOutput.print("failed... trying to format...");
-        if (LittleFS.begin(true) == true)
-        {
+        if (!LittleFS.begin(true)) {
             MessageOutput.print("success");
-        }
-        else
-        {
+        } else {
             MessageOutput.print("failed");
         }
-    }
-    else
-    {
+    } else {
         MessageOutput.println("done");
     }
 
     // Read configuration values
-    // =========================
     MessageOutput.print("Reading configuration... ");
-    Configuration.setDefaultConfig();   // 1) First we set the default config values
-    bool isRead = Configuration.read(); // 2) We try to read the config values from LittleFS
-
-    // Did something go wrong?
-    if (isRead == false || Configuration.get().Cfg.AppID != CONFIG_APP_ID || Configuration.get().Cfg.AppID == 0)
-    {
+    if (!Configuration.read()) {
         MessageOutput.print("initializing... ");
-        Configuration.setDefaultConfig(); // clear all & set default values!
-        if (Configuration.write() == true)
-        {
+        Configuration.init();
+        if (Configuration.write()) {
             MessageOutput.print("written... ");
-        }
-        else
-        {
+        } else {
             MessageOutput.print("failed... ");
         }
     }
-    if (Configuration.get().Cfg.Version != CONFIG_VERSION)
-    {
+    if (Configuration.get().Cfg.Version != CONFIG_VERSION) {
         MessageOutput.print("migrated... ");
         Configuration.migrate();
+    }
+    if (Configuration.get().Cfg.AppID != CONFIG_APP_ID || Configuration.get().Cfg.AppID == 0)
+    {
+        // set default values
+        MessageOutput.print("set new App ID... ");
+        Configuration.init();
+        Configuration.get().Cfg.AppID = CONFIG_APP_ID;
+        Configuration.write();
+        Configuration.read(); // --> set default values!
     }
     MessageOutput.println("done");
 
